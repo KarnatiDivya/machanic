@@ -1,0 +1,1 @@
+const API = "http://localhost:3000"; // Change to your deployed backend URL
