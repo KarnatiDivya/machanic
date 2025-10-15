@@ -1,26 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register Mechanic</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register Mechanic</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        form {
+            background: #fff;
+            padding: 25px;
+            max-width: 400px;
+            margin: 0 auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        input,
+        button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #218838;
+        }
+        
+        .message {
+            margin-top: 15px;
+            font-weight: bold;
+            color: green;
+        }
+    </style>
 </head>
+
 <body>
-  <header>
-    <h1>Register Mechanic</h1>
-  </header>
+    <h1>Register as Mechanic</h1>
 
-  <form id="registerForm">
-    <input type="text" id="name" placeholder="Name" required>
-    <input type="text" id="phone" placeholder="Phone" required>
-    <input type="text" id="city" placeholder="City" required>
-    <input type="text" id="location" placeholder="Work Location" required>
-    <input type="text" id="speciality" placeholder="Speciality" required>
-    <button type="submit">Register</button>
-  </form>
+    <form id="registerForm">
+        <input type="text" id="name" placeholder="Name" required />
+        <input type="tel" id="phone" placeholder="Phone Number" required />
+        <input type="text" id="city" placeholder="City" required />
+        <input type="text" id="location" placeholder="Work Location" required />
+        <input type="text" id="speciality" placeholder="Speciality" required />
+        <button type="submit">Send Request</button>
+    </form>
 
-  <script src="config.js"></script>
-  <script src="register.js"></script>
+    <div class="message" id="responseMessage"></div>
+
+    <script>
+        const API = "https://machanic-1.onrender.com/mechanics";
+
+        document.getElementById("registerForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const mechanic = {
+                id: crypto.randomUUID(),
+                name: document.getElementById("name").value.trim(),
+                phone: document.getElementById("phone").value.trim(),
+                city: document.getElementById("city").value.trim(),
+                location: document.getElementById("location").value.trim(),
+                speciality: document.getElementById("speciality").value.trim()
+            };
+
+            fetch(API, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(mechanic)
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error("Failed to add mechanic");
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById("responseMessage").textContent = "✅ Mechanic registered successfully!";
+                    document.getElementById("registerForm").reset();
+                    console.log("Added mechanic:", data);
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById("responseMessage").textContent = "❌ Something went wrong. Please try again.";
+                });
+        });
+    </script>
 </body>
+
 </html>
